@@ -1,0 +1,47 @@
+--track0:X,-2000,2000,0
+--track1:Y,-2000,2000,0
+--track2:•,0,2000,100
+--track3:‚‚³,0,2000,100
+--check0:ƒ}ƒXƒN‚Ì”½“],0
+--dialog:}Œ`/fig,figure="ŽlŠpŒ`";Œ³ƒTƒCƒY‚É‡‚í‚·/chk,opt=0;
+
+local w = obj.track2 local h = obj.track3
+local clip_w = obj.w - w local clip_h = obj.h - h
+local X_gap = obj.track0 local Y_gap = obj.track1
+
+local fig_name = ""
+local fig_type_num = 0
+if(figure == "”wŒi") then
+    fig_type_num = 0
+elseif(figure == "‰~") then
+    fig_type_num = 1
+elseif(figure == "ŽlŠpŒ`") then
+    fig_type_num = 2
+elseif(figure == "ŽOŠpŒ`") then
+    fig_type_num = 3
+elseif(figure == "ŒÜŠpŒ`") then
+    fig_type_num = 4
+elseif(figure == "˜ZŠpŒ`") then
+    fig_type_num = 5
+elseif(figure == "¯Œ^") then
+    fig_type_num = 6
+else
+    fig_type_num = 0
+    fig_name = fig_type
+end
+
+--c‰¡”äŒvŽZ
+local ratio = 0
+if(w == h) then
+    ratio = 0
+elseif(w > h) then
+    ratio = 100 * ((h / w) - 1)
+elseif(w < h) then
+    ratio = -100 * ((w / h) - 1)
+end
+
+obj.effect("ƒNƒŠƒbƒsƒ“ƒO","ã",clip_h/2-Y_gap,"‰º",clip_h/2+Y_gap,"‰E",clip_w/2+X_gap,"¶",clip_w/2-X_gap)
+if figure ~= "ŽlŠpŒ`" then obj.effect("ƒ}ƒXƒN",'type',fig_type_num,'name',fig_name,"ƒTƒCƒY",math.max(w,h),"c‰¡”ä",ratio) end
+obj.copybuffer('tmp','obj')
+
+obj.load('tempbuffer')

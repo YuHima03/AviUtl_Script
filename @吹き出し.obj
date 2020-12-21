@@ -1,0 +1,90 @@
+--[[
+    
+吹き出し.obj v1.0(2020/10/14更新)
+
+===＜重要＞=============================================================
+このスクリプト又は改変されたスクリプトに関するいかなる損害等があった場合でも、
+製作者であるゆーひまは一切責任を負いませんのでご了承ください。
+=======================================================================
+
+＜補足＞
+トラックバーで設定できる値の上限、下限を変更したい場合は、
+例）track0:example,下限,上限,初期値（※track(番号)とその横の名前はそのままにしておいてください）
+上記のように変更することができますが、スクリプトによっては、値の過大、過小によって動作がおかしくなったり
+不安定になる可能性があります（僕も出来るだけ対策しますが万一バグってしまった場合はご容赦願います）
+
+]]
+
+@四角吹き出し
+--track0:幅,0,2000,200
+--track1:高さ,0,2000,150
+--track2:角幅,0,2000,50
+--track3:位置,-100,100,0
+--check0:点を表示,0
+--dialog:色/col,color=0xffffff;角の先端の位置,pos={0,0};
+
+--[これを消す場合は"--YuhFunc専用"と記された関数が使えなくなりますのでご注意ください]
+local yuhfunc = require('YuhFunc')
+
+obj.setanchor('pos',1)
+
+local w = obj.track0 local h = obj.track1
+local tmp_w = w local tmp_h = h
+local horns_pos = obj.track3 + 100 local horns_size = obj.track2
+--仮想バッファサイズ
+if (math.abs(pos[1]) * 2 + 25 > w) then tmp_w = math.abs(pos[1]) * 2 + 25 end
+if (math.abs(pos[2]) * 2 + 25 > h) then tmp_h = math.abs(pos[2]) * 2 + 25 end
+if (obj.check0 == true) then
+    if (tmp_w < w + 25) then tmp_w = tmp_w + 25 end
+    if (tmp_h < h + 25) then tmp_h = tmp_h + 25 end
+end
+
+if (w > 0 and h > 0) then
+    obj.setoption('drawtarget','tempbuffer',tmp_w,tmp_h)
+        --元となる四角形
+        obj.load('figure',"四角形",color,math.max(w,h))
+            if (tmp_w > w or tmp_h > h) then obj.effect("マスク",'type',2,"サイズ",math.max(w,h),"縦横比",yuhfunc.GetRatio(w,h)) end    --YuhFunc専用
+            --[[※yuhfunc.GetRatio()を使わない場合の文を下に書いておきます(こちらの方は細い線をくっきりと描画できませんのでご注意ください)
+            if (tmp_w > w or tmp_h > h) then obj.effect("クリッピング","上",h - tmp_h,"左",w - tmp_w,"中心の位置を変更",1)
+            ]]
+        obj.draw()
+        --角
+        if(horns_size ~= 0) then
+            --角の根本部分の2ヶ所の座標
+            local around_len = w * 2 + h * 2
+            local tr_pos = {}
+            for i = 1, 2 do
+                local tmp
+                tmp = around_len * (horns_pos / 100)
+                if (i == 2) then tmp = tmp + horns_size end
+                --補正
+                if (tmp > around_len) then tmp = tmp % around_len end
+                --各点の座標計算
+                tr_pos[i] = {}
+                if (tmp <= w) then  --上
+                    tr_pos[i] = { w / -2 + tmp, h / -2 }
+                elseif (tmp <= w + h) then  --右
+                    tr_pos[i] = { w / 2, h / -2 + (tmp - w) }
+                elseif (tmp <= 2 * w + h) then  --下
+                    tr_pos[i] = { w / -2 + around_len - tmp - h, h / 2 }
+                else    --左
+                    tr_pos[i] = { w / -2, h / -2 + (around_len - tmp) }
+                end
+                --点表示
+                if obj.check0 == true then
+                    obj.load('figure',"円",0x00ffff,25)
+                    obj.draw(tr_pos[i][1],tr_pos[i][2])
+                end
+            end
+        end
+        --アンカー表示
+        if obj.check0 == true then
+            obj.load('figure',"円",0xff00ff,25)
+            obj.draw(pos[1],pos[2])
+        end
+    obj.setoption('drawtarget','framebuffer')
+    
+    obj.load('tempbuffer')
+end
+
+--(C) 2020 YuHima

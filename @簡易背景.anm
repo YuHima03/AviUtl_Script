@@ -1,0 +1,215 @@
+--[[
+これはreadmeに書く用ね
+
+///// 簡易背景 v1.0 (2020/12/09更新) ///// ==============================
+
+===>< このスクリプトについて ><===
+・このスクリプトを使用することでテキスト等に背景をつけることができます
+・デフォルトでは単色の背景ですが、画像の背景にすることも可能です
+
+===>< 使用上の注意 ><===
+・このアニメーション効果は同一オブジェクトに対して何度も掛けることが可能ですが、バグに繋がる可能性がありますのでご注意ください
+・個別オブジェクトで使用することも可能ですがバグが多いので、使用される際はご注意ください
+・このスクリプトの前身である「簡易テキスト背景.anm」との互換性はありませんのでご注意ください
+
+===>< 使い方 ><===
+
+]]
+
+local obj --エディタの警告が五月蠅いので一時的に...
+
+--[[
+※このスクリプトで使うグローバル関数の詳細
+
+YEBG_DATA -> table
+    .bg -> table (背景の設定)
+        .x -> number (X座標)
+        .y -> number (Y座標)
+        .z -> number (Z座標)
+        .rx -> number (X回転)
+        .ry -> number (Y回転)
+        .rz -> number (Z回転)
+        .alpha -> number (透明度)
+        .zoom -> table (拡大率の設定)
+            [1] -> number (X拡大率)
+            [2] -> number (Y拡大率)
+        .blend -> number (合成モード)
+
+    .img -> table (対象オブジェクト)
+        ※.bgと同様なので省略
+
+    .file -> table (画像等のデータ)
+        .path -> string (パス)
+        .zoom -> number (拡大率)(※-1で自動設定)
+        .blend -> number (合成モード)
+        ===========================================
+        /// 以下は種別設定
+        .scene_num -> number (シーン番号)
+        .startp -> number (再生位置[%])
+        .ac -> bool (number 0or1) (アルファチャンネルの有無)
+
+]]
+
+--[[
+===============
+/// 最終描画 ///
+===============
+]]
+@Draw[Main]
+--track0:幅,-2000,2000,100
+--track1:高さ,-2000,2000,100
+--track2:BG透明度,0,100,100
+--track3:モード,-1,5,0,1
+--check0:背景のみエフェクト,0
+--dialog:色/col,color=0xffffff;くり抜き/chk,local clip=0;はみ出し部分描画/chk,local overflow=0;拡大率補正/chk,local correct_zoom=0;
+
+--[[
+/// データ保存("_"は元の数値) ///
+]]
+--描画用データ
+local data = YEBG_DATA or -1
+YEBG_DATA = nil --初期化しとく
+--拡大率
+local zoom = obj.getvalue("layer"..obj.layer..".zoom") / 100
+local zoom_ = obj.zoom
+--縦横サイズ
+local w_ = math.floor(obj.w / zoom) * zoom_
+local h_ = math.floor(obj.h / zoom) * zoom_
+local w = w_ + obj.track0
+local h = h_ + obj.track1
+--揃え位置
+local align = math.floor(obj.track3)
+
+--はみ出し部分描画
+if overflow == 1 then
+    
+end
+
+--いざ描画
+if obj.getoption('multi_object') == false then
+    --[[
+    /// 個別オブジェクト無効時 ///
+    ]]
+    if math.min(w, h) > 0 then
+        obj.copybuffer('cache:YBG_IMG', 'obj')
+
+        obj.setoption('drawtarget', 'tempbuffer', math.max(w, w_), math.max(h, h_))
+            --背景
+            if obj.check0 == false then
+                if data == -1 or not data.file then
+                    obj.load('figure', "四角形", color, 10)
+                    obj.drawpoly(w/-2, h/-2, 0, w/2, h/-2, 0, w/2, h/2, 0, w/-2, h/2, 0, 0, 0, 10, 0, 10, 10, 0, 10, obj.track2/100)
+                else
+                    --背景画像
+                    obj.load(data.file.path)
+                    obj.draw()
+                end
+            else 
+                --背景のみエフェクト
+                local BGSize = math.max(w, h)
+                local BGDPCPos = {(BGSize - w)/2, (BGSize - h)/2}
+                obj.load('figure', "四角形", color, BGSize)
+                    obj.effect()
+                obj.drawpoly(w/-2, h/-2, 0, w/2, h/-2, 0, w/2, h/2, 0, w/-2, h/2, 0, BGDPCPos[1], BGDPCPos[2], BGDPCPos[1] + w, BGDPCPos[2], BGDPCPos[1] + w, BGDPCPos[2] + h, BGDPCPos[1], BGDPCPos[2] + h, obj.track2/100)
+            end
+
+            if clip == 1 then obj.setoption('blend', 'alpha_sub') end --くり抜き
+            obj.copybuffer('obj', 'cache:YBG_IMG')
+            obj.draw(0, 0, 0, zoom_)
+            obj.setoption('blend', 0)
+        obj.setoption('drawtarget', 'framebuffer')
+
+        obj.load('tempbuffer')
+        if obj.check0 == true then obj.draw() end --背景のみエフェクト
+    else
+        obj.load('figure', "四角形", 0xffffff, 10)
+        obj.draw(0, 0, 0, 1, 0)
+    end
+else
+    --[[
+    /// 個別オブジェクト有効時 ///
+    ※バグが多くてロクに動かないのであんま使えないです...
+    ]]
+end
+
+
+--[[
+=================
+/// 背景設定用 ///
+=================
+]]
+@BG_Settings[Pos_Blend]
+--track0:X,-2000,2000,0
+--track1:Y,-2000,2000,0
+--track2:Z,-2000,2000,0
+--track3:合成モード,0,10,0
+
+--初期化or引継ぎ
+YEBG_DATA = YEBG_DATA or {}
+YEBG_DATA.bg = YEBG_DATA.bg or {}
+YEBG_DATA.bg.x = (YEBG_DATA.bg.x or 0) + obj.track0
+YEBG_DATA.bg.y = (YEBG_DATA.bg.y or 0) + obj.track1
+YEBG_DATA.bg.z = (YEBG_DATA.bg.z or 0) + obj.track2
+
+@BG_Settings[Rotate]
+--track0:X回転,-360,360,0
+--track1:Y回転,-360,360,0
+--track2:Z回転,-360,360,0
+
+YEBG_DATA = YEBG_DATA or {}
+YEBG_DATA.bg = YEBG_DATA.bg or {}
+YEBG_DATA.bg.rx = (YEBG_DATA.bg.rx or 0) + obj.track0
+YEBG_DATA.bg.ry = (YEBG_DATA.bg.ry or 0) + obj.track1
+YEBG_DATA.bg.rz = (YEBG_DATA.bg.rz or 0) + obj.track2
+
+@BG_Settings[Zoom]
+--track0:拡大率,0,1000,100
+--track1:X,0,1000,100
+--track2:Y,0,1000,100
+
+--初期化or引継ぎ
+YEBG_DATA = YEBG_DATA or {}
+YEBG_DATA.bg = YEBG_DATA.bg or {}
+YEBG_DATA.zoom = YEBG_DATA.zoom or {}
+YEBG_DATA.zoom[1] = (YEBG_DATA.zoom[1] or ((obj.track0 / 100) * (obj.track1 / 100)))
+YEBG_DATA.zoom[2] = (YEBG_DATA.zoom[2] or ((obj.track0 / 100) * (obj.track2 / 100)))
+
+--[[
+===================
+/// 背景画像追加 ///
+===================
+]]
+@Background_image
+--track0:拡大率[%],-1,1000,100
+--file:
+
+YEBG_DATA = YEBG_DATA or {}
+YEBG_DATA.file = {}
+YEBG_DATA.file.type = 'image'
+YEBG_DATA.file.path = file
+YEBG_DATA.file.zoom = obj.track0/100
+
+@Background_video
+--track0:再生位置[%],0,100,0
+--track1:ｱﾙﾌｧﾁｬﾝﾈﾙ,0,1,0,1
+--track2:拡大率[%],-1,1000,100
+--file:
+
+YEBG_DATA = YEBG_DATA or {}
+YEBG_DATA.file = {}
+YEBG_DATA.file.type = 'video'
+YEBG_DATA.file.startp = obj.track0 / 100
+YEBG_DATA.file.ac = obj.track1
+YEBG_DATA.file.path = file
+YEBG_DATA.file.zoom = obj.track0/100
+
+@Background_scene
+--track0:シーン番号,0,49,0,1
+--track1:拡大率[%],-1,1000,100
+
+YEBG_DATA = YEBG_DATA or {}
+YEBG_DATA.file = {}
+YEBG_DATA.file.type = 'scene'
+YEBG_DATA.file.scene_num = obj.track0
+YEBG_DATA.file.path = file
+YEBG_DATA.file.zoom = obj.track1/100

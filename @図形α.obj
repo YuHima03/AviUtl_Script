@@ -1,0 +1,26 @@
+@円
+--track0:幅,0,2000,150
+--track1:高さ,0,2000,150
+--track2:ライン幅,0,2000,2000
+--color:0xffffff
+local aufig = require('AU_Fig')
+local w = obj.track0
+local h = obj.track1
+local lw = obj.track2
+local lw_w = w - lw
+local lw_h = h - lw
+
+if(lw > 0 and math.min(w,h) > 0)then
+    --draw_on_tempbuffer
+    obj.setoption('drawtarget','tempbuffer',w,h)
+        obj.load('figure',"四角形",color,math.max(w,h))
+            obj.effect("マスク",'type',1,"サイズ",math.max(w,h),"縦横比",aufig.GetRatio(w,h))
+            --line_weight
+            if(math.max(w,h) >= lw)then
+                obj.effect("マスク",'type',1,"サイズ",math.max(lw_w,lw_h),"縦横比",aufig.GetRatio(lw_w,lw_h),"マスクの反転",1)
+            end
+        obj.draw()
+    obj.setoption('drawtarget','framebuffer')
+    --draw
+    obj.load('tempbuffer')
+end

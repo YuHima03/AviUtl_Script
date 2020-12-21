@@ -1,0 +1,27 @@
+--track0:サイズ,0,2000,150
+--track1:円形化[%],0,100,100
+--track2:ライン幅,0,2000,2000
+--track3:ライン拡張,0,2000,0
+--color:0xffffff
+
+--これを消す場合はaufig.GetRatio()等の関数が使えなくなりますのでご注意ください
+local aufig = require('AU_Fig')
+
+local size = obj.track0 local line_w = obj.track2
+local tmpw = size local tmph = size
+local around_len = size / 2 * math.pi
+
+if size > 0 then
+    obj.setoption('drawtarget','tempbuffer',tmpw,tmph)
+        --円1
+        obj.load('figure',"円",color,size,line_w)
+            obj.effect("クリッピング","右",size / 2)
+        obj.draw()
+        --円2
+        obj.load('figure',"円",color,size,line_w)
+            obj.effect("クリッピング","左",size / 2)
+        obj.draw()
+    obj.setoption('drawtarget','framebuffer')
+
+    obj.load('tempbuffer')
+end

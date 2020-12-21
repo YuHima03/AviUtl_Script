@@ -1,0 +1,67 @@
+--[[
+///////「wave.anm」v1.0 (2020/11/16更新) ///////
+
+製作：YuHima (twitter:@yuhima_03)
+
+===< 重要 >===
+・本スクリプトを利用した事による一切の損害の責任は負いませんでご了承ください。
+・また、本スクリプトの改変、二次配布は自由としますが、これらを利用した事による一切の損害についても責任は負いません。
+
+===< 説明 >===
+・説明に関しては配布したzipファイルに同封されている readme.txt に書いてありますのでそちらをご覧ください。
+
+]]
+
+--[[
+///// 通常の波 /////
+]]
+@normal_wave
+--track0:長さ,0,1000,100,1
+--track1:高さ,0,1000,100
+--track2:周期,0,1000,100
+--track3:間隔,0,1000,100
+--check0:絶対座標を利用,0
+--dialog:oxとoyも含める/chk,opt1=0;中心位置を固定/chk,opt2=0;基準[空白ﾍﾙﾌﾟ],opt3=0;両端の座標を保存/chk,opt4=0;
+
+local len = math.floor(obj.track0)
+local height = obj.track1
+local cycle = obj.track2 / 100
+local space = obj.track3
+local crit = opt1 or -1
+
+--仮想バッファのサイズ
+local objw = obj.w
+local objh = obj.h
+local tmpw = objw + space*(len-1)
+local tmph = height*2 + objh
+
+if math.min(len, space, tmpw, tmph) > 0 then
+    obj.setoption('drawtarget', 'tempbuffer', tmpw, tmph)
+        --描画
+        if opt2 == 0 then
+            local sposx = tmpw/-2 + objw/2
+            for i = 0, len - 1, 1 do
+                local posx = sposx + i*space
+                local posy
+                if obj.check0 == true then --絶対座標
+                    posy = math.sin(math.rad(posx + obj.x + obj.ox)*cycle) * height
+                else --相対座標
+                    posy = math.sin(math.rad(posx)*cycle) * height
+                end
+                obj.draw(posx, posy)
+
+                if i == 0 and opt4 == 1 then
+                    YWaveData = {posx, posy}
+                end
+            end
+        else
+        end
+    obj.setoption('drawtarget', 'framebuffer')
+
+    obj.load('tempbuffer')
+end
+
+--[[
+///// 波打つ背景 /////
+]]
+@background_wave

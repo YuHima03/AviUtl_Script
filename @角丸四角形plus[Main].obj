@@ -1,0 +1,26 @@
+@Main[%]
+--track0:幅,0,2000,100
+--track1:高さ,0,2000,100
+--track2:ライン幅,0,1500,1500
+--track3:角丸[%],0,100,0
+--check0:オプション,0
+--dialog:色/col,color=0xffffff;左上角丸/chk,LT=1;右上角丸/chk,RT=1;右下角丸/chk,RB=1;左下角丸/chk,LB=1;
+
+local data = {obj.ox, obj.oy, obj.oz, obj.zoom, obj.alpha, obj.rx, obj.ry, obj.rz, obj.aspect}
+local w = obj.track0 local h = obj.track1 local linew = obj.track2 local r = math.min(w, h) / 2 * (math.max(0.5, obj.track3) / 100)
+local opt = 0
+
+if obj.check0 == true then
+	R_SQUARE_DATA = {w, h, linew, color}
+	obj.load('text', "<s60>オプション有効化")
+	return
+else
+	require('rounded_square').draw(w, h, linew, color, r * LT, r * RT, r * RB, r * LB, opt)
+end
+
+obj.ox = data[1] obj.oy = data[2] obj.oz = data[3] obj.zoom = data[4] obj.alpha = data[5] obj.rx = data[6] obj.ry = data[7] obj.rx = data[8] obj.aspect = data[9]
+
+@Main[px]
+
+
+--(C)YuHima

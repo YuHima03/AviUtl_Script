@@ -1,0 +1,75 @@
+--[[
+
+便利で使える図形どもをかき集めたやつ
+
+機能は同封の YhAdvancedFigure.lua に集約
+使おうとすればその他スクリプトからも呼び出せるので便利...かな？w
+
+※ほぼ全てに角丸オプションを搭載するかな？？(作るのが地獄になる予感)
+]]
+
+@円
+--[[/// デフォルトで縦横比を変えるとライン幅が崩れる現象を若干ではあるが改善 ///]]
+--track0:幅,0,4000,100
+--track1:高さ,0,4000,100
+--track2:ライン幅,0,4000,4000
+--track3:描画[%],0,100,100
+--dialog:色/col,local color=0xffffff;始点[%],local start_p=0;
+
+local F = require('YhAdvancedFigure')
+
+local option = {
+    defaultblend = 0,
+}
+
+local fig_option = {
+    around = obj.track3 / 100,
+    around_startp = (start_p or 0) / 100
+}
+
+F.Draw(option, '円', color, obj.track0, obj.track1, obj.track2, fig_option)
+
+--毎回モジュールを再読み込みするようにする(配布時は消す)
+package.loaded['YhAdvancedFigure'] = nil
+
+@四角形
+--[[/// 罫線や対角線を追加 ///]]
+--track0:幅,0,4000,100
+--track1:高さ,0,4000,100
+--track2:ライン幅,0,4000,4000
+--track3:描画[%],0,100,100
+--dialog:色/col,local color=0xffffff;始点[%],local start_p=0;短点を円に/chk,local ep_circle=0;
+
+local F = require('YhAdvancedFigure')
+
+local option = {
+    defaultblend = 0,
+}
+
+local fig_option = {
+    around = obj.track3 / 100,
+    around_startp = (start_p or 0) / 100,
+    around_epcircle = ep_circle or 0
+}
+
+F.Draw(option, '四角形', color, obj.track0, obj.track1, obj.track2, fig_option)
+
+--毎回モジュールを再読み込みするようにする(配布時は消す)
+package.loaded['YhAdvancedFigure'] = nil
+
+@三角形
+--[[/// デフォルトで真ん中が中心に来ない謎現象を改善 ///]]
+
+@角度指定三角形
+
+@平行四辺形
+--ひし形とそこまで変わらないが...
+
+@ひし形
+--平行四辺形とそこまで変わらないが...
+
+@直線
+--ただの直線、副産物みたいなやつ
+
+@十字
+--テキストで出すより正確な十字で、更に角丸にすることも可能な十字

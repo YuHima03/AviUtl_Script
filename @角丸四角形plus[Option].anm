@@ -1,0 +1,25 @@
+@Option[%]
+--track0:ç∂è„[%],0,100,0
+--track1:âEè„[%],0,100,0
+--track2:âEâ∫[%],0,100,0
+--track3:ç∂â∫[%],0,100,0
+
+local data = {obj.ox, obj.oy, obj.oz, obj.zoom, obj.alpha, obj.rx, obj.ry, obj.rz, obj.aspect}
+local w = 0 local h = 0 local linew = 2000 local color = 0xffffff
+if type(R_SQUARE_DATA) == 'table' then
+	w, h, linew, color = R_SQUARE_DATA[1], R_SQUARE_DATA[2], R_SQUARE_DATA[3], R_SQUARE_DATA[4]
+end
+local r = math.min(w, h) / 2
+local opt = 1
+local LT = obj.track0/100
+local RT = obj.track1/100
+local RB = obj.track2/100
+local LB = obj.track3/100
+
+require('rounded_square').draw(w, h, linew, color, r * LT, r * RT, r * RB, r * LB, opt)
+
+obj.ox = data[1] obj.oy = data[2] obj.oz = data[3] obj.zoom = data[4] obj.alpha = data[5] obj.rx = data[6] obj.ry = data[7] obj.rx = data[8] obj.aspect = data[9]
+
+@Option[px]
+
+--(C)YuHima
