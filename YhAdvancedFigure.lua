@@ -72,6 +72,8 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
 
     if #arg >= 5  and type(arg[1]) == 'table' then
         --データ保存
+        local GDATA = YhAFig_OPT or {}
+        local rounded = GDATA.rounded or { 0, 0, 0, 0 } --角丸オプション
         local DOPT = { --描画オプション
             --基本設定
             intempbuffer = arg[1].tempbuffer or false,
@@ -92,7 +94,7 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
             cy = arg[1].cy or 0,
             cz = arg[1].cz or 0,
             alpha = arg[1].alpha or 0,
-            zoom = arg[1].zoom or 1
+            zoom = arg[1].zoom or 1,
         }
         local FIG = tostring(arg[2]) -- 図形名
         local COL = tonumber(arg[3]) -- 色
@@ -105,6 +107,9 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
         local LINEW = tonumber(arg[6]) -- ライン幅
         local FOPT --図形ごとのオプション
         arg[7] = arg[7] or {}
+
+        --グローバル変数初期化
+        YhAFig_OPT = nil
 
         --[[
         ////////////////

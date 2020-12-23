@@ -16,6 +16,9 @@
 --track3:描画[%],0,100,100
 --dialog:色/col,local color=0xffffff;始点[%],local start_p=0;
 
+--毎回モジュールを再読み込みするようにする(配布時は消す)
+package.loaded['YhAdvancedFigure'] = nil
+
 local F = require('YhAdvancedFigure')
 
 local option = {
@@ -29,9 +32,6 @@ local fig_option = {
 
 F.Draw(option, '円', color, obj.track0, obj.track1, obj.track2, fig_option)
 
---毎回モジュールを再読み込みするようにする(配布時は消す)
-package.loaded['YhAdvancedFigure'] = nil
-
 @四角形
 --[[/// 罫線や対角線を追加 ///]]
 --track0:幅,0,4000,100
@@ -39,6 +39,9 @@ package.loaded['YhAdvancedFigure'] = nil
 --track2:ライン幅,0,4000,4000
 --track3:描画[%],0,100,100
 --dialog:色/col,local color=0xffffff;始点[%],local start_p=0;短点を円に/chk,local ep_circle=0;
+
+--毎回モジュールを再読み込みするようにする(配布時は消す)
+package.loaded['YhAdvancedFigure'] = nil
 
 local F = require('YhAdvancedFigure')
 
@@ -53,9 +56,6 @@ local fig_option = {
 }
 
 F.Draw(option, '四角形', color, obj.track0, obj.track1, obj.track2, fig_option)
-
---毎回モジュールを再読み込みするようにする(配布時は消す)
-package.loaded['YhAdvancedFigure'] = nil
 
 @三角形
 --[[/// デフォルトで真ん中が中心に来ない謎現象を改善 ///]]

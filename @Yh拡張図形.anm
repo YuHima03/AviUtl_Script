@@ -1,1 +1,20 @@
-@角丸
+@角丸オプション
+--track0:左上,0,2000,100
+--track1:右上,0,2000,100
+--track2:右下,0,2000,100
+--track3:左下,0,2000,100
+--check0:「右上」を全ての角に適応,0
+
+YhAFig_OPT = YhAFig_OPT or {}
+YhAFig_OPT.rounded = {
+    LT = obj.track0,
+    RT = obj.track1,
+    RB = obj.track2,
+    LB = obj.track3
+}
+
+if obj.check0 then
+    YhAFig_OPT.RT = obj.track0
+    YhAFig_OPT.RB = obj.track0
+    YhAFig_OPT.LB = obj.track0
+end
