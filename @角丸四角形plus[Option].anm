@@ -1,8 +1,8 @@
 @Option[%]
---track0:¶ã[%],0,100,0
---track1:‰Eã[%],0,100,0
---track2:‰E‰º[%],0,100,0
---track3:¶‰º[%],0,100,0
+--track0:ï¿½ï¿½ï¿½ï¿½[%],0,100,0
+--track1:ï¿½Eï¿½ï¿½[%],0,100,0
+--track2:ï¿½Eï¿½ï¿½[%],0,100,0
+--track3:ï¿½ï¿½ï¿½ï¿½[%],0,100,0
 
 local data = {obj.ox, obj.oy, obj.oz, obj.zoom, obj.alpha, obj.rx, obj.ry, obj.rz, obj.aspect}
 local w = 0 local h = 0 local linew = 2000 local color = 0xffffff
