@@ -12,7 +12,6 @@ AviUtlスクリプト「Yh拡張図形」で使う関数群だゾ
 ]]
 
 local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色, 幅, 高さ, ライン幅, {図形ごとのオプション...} )
-
     --[[
     ===< 描画オプションの設定 >===
     >> テーブルを利用して以下のように記述してください(初期値が用意されているので全て必須ではありません)
@@ -132,9 +131,7 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
                 SIZE[2]/2, SIZE[2]/-2
             }
 
-            --[[
-            /// 描画処理ここから //
-            ]]
+            --[[/// 描画処理ここから ///]]
             if SIZE.min > 0.5 then
                 --基本の円
                 obj.load('figure', "円", COL, SIZE.max)
@@ -146,9 +143,7 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
                     obj.setoption('blend', DOPT.defaultblend, 'force')
                 end
             end
-            --[[
-            /// 描画処理ここまで ///
-            ]]
+            --[[/// 描画処理ここまで ///]]
         elseif FIG == '拡張円' then
         elseif FIG == '四角形' then
             FOPT = {
@@ -163,9 +158,7 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
                 SIZE[2]/2, SIZE[2]/-2
             }
 
-            --[[
-            /// 描画処理ここから //
-            ]]
+            --[[/// 描画処理ここから ///]]
             if SIZE.min > 0.5 then
                 --基本の四角形
                 obj.load('figure', '四角形', COL, 10)
@@ -180,9 +173,7 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
                 if FOPT.around < 1 then
                 end
             end
-            --[[
-            /// 描画処理ここまで ///
-            ]]
+            --[[/// 描画処理ここまで ///]]
         end
 
         --[[
