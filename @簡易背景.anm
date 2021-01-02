@@ -38,15 +38,8 @@ YEBG_DATA -> table
     .img -> table (対象オブジェクト)
         ※.bgと同様なので省略
 
-    .file -> table (画像等のデータ)
-        .path -> string (パス)
-        .zoom -> number (拡大率)(※-1で自動設定)
-        .blend -> number (合成モード)
-        ===========================================
-        /// 以下は種別設定
-        .scene_num -> number (シーン番号)
-        .startp -> number (再生位置[%])
-        .ac -> bool (number 0or1) (アルファチャンネルの有無)
+    .obj_bg -> table (なんでも背景に)
+        [1] -> number (レイヤー番号)
 
 ]]
 
@@ -62,6 +55,8 @@ YEBG_DATA -> table
 --track3:モード,-1,5,0,1
 --check0:背景のみエフェクト,0
 --dialog:色/col,color=0xffffff;くり抜き/chk,local clip=0;はみ出し部分描画/chk,local overflow=0;拡大率補正/chk,local correct_zoom=0;
+
+local r_module = pcall(require, "rikky_module")
 
 --[[
 /// データ保存("_"は元の数値) ///
@@ -96,12 +91,16 @@ if obj.getoption('multi_object') == false then
         obj.setoption('drawtarget', 'tempbuffer', math.max(w, w_), math.max(h, h_))
             --背景
             if obj.check0 == false then
-                if data == -1 or not data.file then
+                if data == -1 or not data.obj_bg then
                     obj.load('figure', "四角形", color, 10)
                     obj.drawpoly(w/-2, h/-2, 0, w/2, h/-2, 0, w/2, h/2, 0, w/-2, h/2, 0, 0, 0, 10, 0, 10, 10, 0, 10, obj.track2/100)
                 else
-                    --背景画像
-                    obj.load(data.file.path)
+                    --なんでも背景
+                    if r_module then
+                        rikky_module.image('r', 'YEBG_BG_' .. data.obj_bg[1])
+                    else
+                        obj.copybuffer('obj', 'cache:YEBG_BG_' .. data.obj_bg[1])
+                    end
                     obj.draw()
                 end
             else 
@@ -175,41 +174,22 @@ YEBG_DATA.zoom[1] = (YEBG_DATA.zoom[1] or ((obj.track0 / 100) * (obj.track1 / 10
 YEBG_DATA.zoom[2] = (YEBG_DATA.zoom[2] or ((obj.track0 / 100) * (obj.track2 / 100)))
 
 --[[
-===================
-/// 背景画像追加 ///
-===================
+=====================
+/// なんでも背景に ///
+=====================
 ]]
-@Background_image
---track0:拡大率[%],-1,1000,100
---file:
+@なんでも背景[SET]
+local r_module = pcall(require, "rikky_module")
+
+if r_module then
+    rikky_module.image('w', "YEBG_BG_" .. obj.layer)
+else
+    obj.copybuffer('cache:YEBG_BG_' .. obj.layer, 'obj')
+end
+
+@なんでも背景[LOAD]
+--track0:レイヤー番号,0,99,0
 
 YEBG_DATA = YEBG_DATA or {}
-YEBG_DATA.file = {}
-YEBG_DATA.file.type = 'image'
-YEBG_DATA.file.path = file
-YEBG_DATA.file.zoom = obj.track0/100
-
-@Background_video
---track0:再生位置[%],0,100,0
---track1:ｱﾙﾌｧﾁｬﾝﾈﾙ,0,1,0,1
---track2:拡大率[%],-1,1000,100
---file:
-
-YEBG_DATA = YEBG_DATA or {}
-YEBG_DATA.file = {}
-YEBG_DATA.file.type = 'video'
-YEBG_DATA.file.startp = obj.track0 / 100
-YEBG_DATA.file.ac = obj.track1
-YEBG_DATA.file.path = file
-YEBG_DATA.file.zoom = obj.track0/100
-
-@Background_scene
---track0:シーン番号,0,49,0,1
---track1:拡大率[%],-1,1000,100
-
-YEBG_DATA = YEBG_DATA or {}
-YEBG_DATA.file = {}
-YEBG_DATA.file.type = 'scene'
-YEBG_DATA.file.scene_num = obj.track0
-YEBG_DATA.file.path = file
-YEBG_DATA.file.zoom = obj.track1/100
+YEBG_DATA.obj_bg = {}
+YEBG_DATA.obj_bg[1] = obj.track0
