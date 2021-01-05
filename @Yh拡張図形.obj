@@ -9,7 +9,7 @@
 ]]
 
 @円
---[[/// デフォルトで縦横比を変えるとライン幅が崩れる現象を若干ではあるが改善 ///]]
+--[[/// デフォルトで縦横比を変えるとライン幅が崩れる現象を完全に改善(ただし処理が重め) ///]]
 --track0:幅,0,4000,100
 --track1:高さ,0,4000,100
 --track2:ライン幅,0,4000,4000
@@ -31,6 +31,30 @@ local fig_option = {
 }
 
 F.Draw(option, '円', color, obj.track0, obj.track1, obj.track2, fig_option)
+
+@直線
+--[[/// ただの直線、おまけ的な感じ ///]]
+--track0:長さ,0,4000,500
+--track1:幅,0,4000,50
+--track2:描画[%],0,100,0
+--track3:基準,0,10,0,1
+--dialog:色/col,local color=0xffffff;
+
+--毎回モジュールを再読み込みするようにする(配布時は消す)
+package.loaded['YhAdvancedFigure'] = nil
+
+local F = require('YhAdvancedFigure')
+
+local option = {
+    defaultblend = 0,
+}
+
+local fig_option = {
+    length = obj.track2,
+    criteria = math.floor(obj.track3)
+}
+
+F.Draw(option, '直線', color, obj.track0, obj.track1, nil, fig_option)
 
 @四角形
 --[[/// 罫線や対角線を追加 ///]]

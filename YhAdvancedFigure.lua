@@ -101,6 +101,8 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
         local SIZE = { --サイズ
             tonumber(arg[4]), --幅
             tonumber(arg[5]), --高さ
+            w = tonumber(arg[4]), --幅
+            h = tonumber(arg[5]), --高さ
             max = tonumber(math.max(arg[4], arg[5])), --長い方
             min = tonumber(math.min(arg[4], arg[5])) --短い方
         }
@@ -110,6 +112,12 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
 
         --グローバル変数初期化
         YhAFig_OPT = nil
+
+        --全部で使いそうな変数を
+        local p = {
+            SIZE.w/2, SIZE.w/-2,
+            SIZE.h/2, SIZE.h/-2
+        }
 
         --[[
         ////////////////
@@ -131,11 +139,6 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
                 around = arg[7].around or 1,
             }
 
-            local p = {
-                SIZE[1]/2, SIZE[1]/-2,
-                SIZE[2]/2, SIZE[2]/-2
-            }
-
             --[[/// 描画処理ここから ///]]
             if SIZE.min > 0.5 then
                 --基本の円
@@ -150,17 +153,24 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
             end
             --[[/// 描画処理ここまで ///]]
         elseif FIG == '拡張円' then
+        elseif FIG == '直線' then
+            FOPT = {
+                length = arg[7].length or 100, --長さ(%)
+                criteria = arg[7].criteria or 0 --基準
+            }
+
+            --[[/// 描画処理ここから ///]]
+            if SIZE.min > 0.5 then
+                obj.load('figure', "四角形", COL, 10)
+                obj.drawpoly(p[2], p[4], 0, p[1], p[4], 0, p[1], p[3], 0, p[2], p[3], 0)
+            end
+            --[[/// 描画処理ここまで ///]]
         elseif FIG == '四角形' then
             FOPT = {
                 --周辺の設定
                 around = arg[7].around or 1,
                 around_startp = arg[7].around_startp or 0,
                 around_epcircle = arg[7].around_epcircle or 0
-            }
-
-            local p = {
-                SIZE[1]/2, SIZE[1]/-2,
-                SIZE[2]/2, SIZE[2]/-2
             }
 
             --[[/// 描画処理ここから ///]]

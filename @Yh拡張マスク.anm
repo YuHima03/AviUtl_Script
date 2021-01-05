@@ -1,0 +1,11 @@
+@直線
+--track0:間隔[%],0,100,100
+--track1:幅[%],0,100,100
+--track2:角度,-360,360,0
+--track3:ズレ,-2000,2000,0
+--check0:端を丸く,1
+
+--毎回モジュールを再読み込みするようにする(配布時は消す)
+package.loaded['YhAdvancedFigure'] = nil
+
+local F = require('YhAdvancedFigure')
