@@ -1,11 +1,61 @@
 @直線
---track0:間隔[%],0,100,100
---track1:幅[%],0,100,100
+--track0:幅,0,2000,50
+--track1:間隔,0,2000,50
 --track2:角度,-360,360,0
 --track3:ズレ,-2000,2000,0
 --check0:端を丸く,1
+--dialog:色/col,local color=0x000000;処理を端折る/chk,local opt1=0;
 
 --毎回モジュールを再読み込みするようにする(配布時は消す)
 package.loaded['YhAdvancedFigure'] = nil
 
 local F = require('YhAdvancedFigure')
+
+@水玉
+--track0:サイズ,0,2000,50
+--track1:間隔,0,2000,50
+--track2:角度,-360,360,0
+--check0:半透明も含む,0
+--dialog:色/col,local color=0xffffff;
+
+--毎回モジュールを再読み込みするようにする(配布時は消す)
+package.loaded['YhAdvancedFigure'] = nil
+
+local F = require('YhAdvancedFigure')
+
+local sz = obj.track0
+local sp = obj.track1
+local n = { --円の個数
+    math.ceil((obj.w / 2 - sz) / (sz + sp)) * 2 + 1,
+    math.ceil((obj.h / 2 - sz) / (sz + sp)) * 2 + 1
+}
+local p = { --初期座標
+    obj.w / -2 + (obj.w - (sz + sp) * n[1] - sp) / -2 + sz / 2,
+    obj.h / -2 + (obj.h - (sz + sp) * n[2] - sp) / -2 + sz / 2
+}
+
+local dpos = {}
+
+for x = p[1], -p[1], (sz + sp) do
+    for y = p[2], -p[2], (sz + sp) do
+        local c local a
+        c, a = obj.getpixel(x + obj.w/2, y + obj.h/2, "col")
+        dpos[#dpos + 1] = {
+            p = {x, y},
+            a = a
+        }
+    end
+end
+
+obj.setoption('drawtarget', 'tempbuffer', obj.w, obj.h)
+    obj.load('figure', "円", color, sz)
+    for i = 1, #dpos do
+        if dpos[i].a ~= 0 then
+            obj.draw(dpos[i].p[1], dpos[i].p[2], 0, 1, dpos[i].a)
+        end
+    end
+obj.setoption('drawtarget', 'framebuffer')
+
+obj.load('tempbuffer')
+--obj.load('text', "<s80>" .. dpos[15].a)
+obj.draw()

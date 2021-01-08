@@ -1,9 +1,10 @@
 --[[
 
-AviUtlスクリプト「Yh拡張図形」で使う関数群だゾ
+AviUtlスクリプト「Yh拡張図形」や「Yh拡張マスク」で使う関数群です
+(※他のゆーひま作のスクリプトでも必要となる場合があります)
 
 他のスクリプトからも呼び出せます
-色々な詳細な設定も用意してます
+色々な詳細な設定も用意してます(その所為でだいぶ分かり辛いですが...)
 
 ==< 説明欄の読み方 >==
 変数名 -> 変数の型 (説明) (初期値) ※
@@ -31,40 +32,6 @@ local function Draw(...) -- 図形の描画 Draw( {描画オプション...}, 図形の種類, 色
             around -> number (1) (周辺の描画の進捗具合) ※0~1で設定(割合)
             --四角形---------------
             around -> number (1) (周辺の描画の進捗具合) ※0~1で設定(割合)
-
-    ]]
-
-    --[[
-    MEMO：ひな形
-
-    if DOPT.intempbuffer == false then
-        obj.setoption('drawtarget', 'tempbuffer', math.max(SIZE[1], 0.6), math.max(SIZE[2], 0.6))
-    end
-
-    --[[
-    ==================================================
-    /// 描画処理ここから //
-    \]\]
-    if SIZE.min > 0.5 then
-        --基本の円
-        obj.load('figure', "円", COL, SIZE.max)
-        obj.drawpoly(p[2], p[4], 0, p[1], p[4], 0, p[1], p[3], 0, p[2], p[3], 0)
-        --ライン幅
-        if LINEW < SIZE.min / 2 then
-            obj.setoption('blend', 'alpha_sub', 'force')
-                obj.drawpoly(p[2] + LINEW, p[4] + LINEW, 0, p[1] - LINEW, p[4] + LINEW, 0, p[1] - LINEW, p[3] - LINEW, 0, p[2] + LINEW, p[3] - LINEW, 0)
-            obj.setoption('blend', DOPT.defaultblend, 'force')
-        end
-    end
-    --[[
-    /// 描画処理ここまで ///
-    ==================================================
-    \]\]
-
-    if DOPT.intempbuffer == false then
-        obj.setoption('drawtarget', 'framebuffer')
-        obj.load('tempbuffer')
-    end
 
     ]]
 
