@@ -1,0 +1,47 @@
+--[[
+    ‰æ‘œƒ‹[ƒv‚Å‚«‚é
+]]
+--track0:XŠÔŠu,-1000,1000,0
+--track1:YŠÔŠu,-1000,1000,0
+--track2:XŒÂ”,1,500,3,1
+--track3:YŒÂ”,1,500,3,1
+--dialog:ŒÂ•ÊŠî€/chk,local each_crit=0;
+
+local space = {
+    x = obj.track0,
+    y = obj.track1
+}
+if each_crit == 0 then
+    space.x = space.x * (obj.track0 / 100)
+    space.y = space.y * (obj.track1 / 100)
+else
+    space.x = space.x + obj.w
+    space.y = space.y + obj.h
+end
+
+local rep_num = {
+    x = obj.track2,
+    y = obj.track3,
+}
+
+local s_pos = {
+    x = space.x * rep_num.x / 2 * -1,
+    y = space.y * rep_num.y / 2 * -1
+}
+if rep_num.x % 2 == 0 then
+    s_pos.x = s_pos.x - obj.w / 2
+end
+if rep_num.y % 2 == 0 then
+    s_pos.y = s_pos.y - obj.h / 2
+end
+
+local tmp_buff = {
+    w = math.abs(s_pos.x * 2) + obj.w,
+    h = math.abs(s_pos.y * 2) + obj.h
+}
+
+obj.setoption('drawtarget', 'tempbuffer', tmp_buff.w, tmp_buff.h)
+    
+obj.setoption('drawtarget', 'framebuffer')
+
+obj.load('tempbuffer')
